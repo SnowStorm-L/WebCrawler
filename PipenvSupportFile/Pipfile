@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"gp.recipe.phantomjs" = "*"
 selenium = "==3.13.0"
 
 [dev-packages]

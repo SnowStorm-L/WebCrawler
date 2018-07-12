@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fc0ae918dfca3ab99a156c0863b5bd1b480f95af0854f4a5a37885873c378e20"
+            "sha256": "521b7ad11b98f675e54f66693c1b18f793f70af3d2e8902baa4e2794ed0df5bc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,40 +16,13 @@
         ]
     },
     "default": {
-        "gp.recipe.phantomjs": {
-            "hashes": [
-                "sha256:cd01fd64ed02b704f881c1f3734da2fd53b142df76d3f3f81db46d36d2d34bfb"
-            ],
-            "index": "pypi",
-            "version": "==2.0.0.0"
-        },
-        "hexagonit.recipe.download": {
-            "hashes": [
-                "sha256:308444b8f58b56ab49dc32d27c71e7bd06c4b9646c4bfb8bdce135fbc92cf056",
-                "sha256:52c29f9c04e3514bc2f2dee2f631a5dcb2b775d382f787c6a5c09202e7c78701"
-            ],
-            "version": "==1.7.1"
-        },
         "selenium": {
             "hashes": [
-                "sha256:30b97338c0d9f1e60e72ecee0579b0f0845d55025342c3d5ccb224fb8a07b787",
-                "sha256:d5dca746955315dc83ec789acff1f298b8517732cf23a24809e4e5939eb919d8"
+                "sha256:6f4c7727d44034b8d635d7cf1c3377f76efc95e192ed5cfb97e0057fe5a92d44",
+                "sha256:f35bb209cab740c195276a323c1b750dbcfdb9f6983e7d6e3abba9cd8838f355"
             ],
             "index": "pypi",
-            "version": "==2.48.0"
-        },
-        "zc.buildout": {
-            "hashes": [
-                "sha256:1e180b62fd129a68cb3a9ec8eb0ef457e18921269a93e87ef2cc34519415332d",
-                "sha256:fd83ae82cc7bf2a61c57aeea5fc0cac2c104dbe747f9a591fa339ec64eb07bd9"
-            ],
-            "version": "==2.12.1"
-        },
-        "zc.recipe.egg": {
-            "hashes": [
-                "sha256:b89eb00979614e3584bb4e8431172b2345d00b983a04ebf00a401fb695f4e6d3"
-            ],
-            "version": "==2.0.7"
+            "version": "==3.13.0"
         }
     },
     "develop": {}
