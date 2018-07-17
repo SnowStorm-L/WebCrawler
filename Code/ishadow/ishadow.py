@@ -31,12 +31,13 @@ class AutoChangeServer:
         relation_dict = plist
         server_list = relation_dict["key.server.list"]
         for each_line in server_list:
-            print(each_line[:8])
+            print(each_line)
+            # print(each_line[:8])
             # 加密过的data类型数据,(旧版的是json编码成的base64)
             # 现在还没破解编码方式
-            value = each_line[8: 12]
-            print(value.decode())
-            print(type(value))
+            # value = each_line[8: 12]
+            # print(value)
+            # print(type(value))
 
     def run(self):
         response_html = self.url_open(self.url).decode('utf-8')
