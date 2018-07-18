@@ -14,7 +14,7 @@ from biplist import *
 
 class AutoChangeServer:
     url = "https://my.ishadowx.net/#"
-    # 桌面复制的配置文件路径,在这个路劲的文件读取 把代码写完成在换正式路径
+    # 桌面复制的配置文件路径,在这个路径的文件读取 把代码写完成在换正式路径
     # 否则可能损坏配置文件
     preference_plist_path = "/Users/l/Desktop/com.jumboapps.shadowsocksx.plist"
 
@@ -31,13 +31,9 @@ class AutoChangeServer:
         relation_dict = plist
         server_list = relation_dict["key.server.list"]
         for each_line in server_list:
+            # 这里是个数组
+            # 数组里面每个data,都可以通过Xcode,ObjC的writeToFile函数,写入一个plist文件里面,打开查看
             print(each_line)
-            # print(each_line[:8])
-            # 加密过的data类型数据,(旧版的是json编码成的base64)
-            # 现在还没破解编码方式
-            # value = each_line[8: 12]
-            # print(value)
-            # print(type(value))
 
     def run(self):
         response_html = self.url_open(self.url).decode('utf-8')
