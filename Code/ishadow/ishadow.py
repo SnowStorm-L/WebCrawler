@@ -28,11 +28,12 @@ class AutoChangeServer:
         except Exception as e:
             print("Not a plist:", e)
 
-        relation_dict = plist
-        server_list = relation_dict["key.server.list"]
+        server_list = plist["key.server.list"]
         for each_line in server_list:
             # 这里是个数组
             # 数组里面每个data,都可以通过Xcode,ObjC的writeToFile函数,写入一个plist文件里面,打开查看
+            # 剩下的工作就是怎么把数据替换进去了.
+            # 我看其它端的配置文件都是json构造的, mac上plist文件存储,稍微不同 有空再继续研究
             print(each_line)
 
     def run(self):
@@ -40,15 +41,15 @@ class AutoChangeServer:
 
         ip_list = re.findall('IP Address:<span id="ip[a-z]{3,4}">(.*?)</span>', response_html)
 
-        print(ip_list)
+        # print(ip_list)
 
         port_list = re.findall('Port:<span id="port[a-z]{3,4}">([0-9]{5})', response_html)
 
-        print(port_list)
+        # print(port_list)
 
         password_list = re.findall('<span id="pw[a-z]{3,4}">([a-z.\-0-9]{1,17})', response_html)
 
-        print(password_list)
+        # print(password_list)
 
     @staticmethod
     def url_open(url, data=None):
@@ -62,4 +63,4 @@ class AutoChangeServer:
 
 if __name__ == "__main__":
     auto_change_server = AutoChangeServer()
-    auto_change_server.open_preference_plist()
+    auto_change_server.run()
