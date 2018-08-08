@@ -13,6 +13,7 @@ from biplist import *
 
 
 class AutoChangeServer:
+    # 2018,8,8 这个网址被封了
     url = "https://my.ishadowx.net/#"
     # 桌面复制的配置文件路径,在这个路径的文件读取 把代码写完成在换正式路径
     # 否则可能损坏配置文件
