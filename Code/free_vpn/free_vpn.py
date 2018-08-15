@@ -80,8 +80,8 @@ def url_open(url, data=None):
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
 class Ishadowx:
-    # 2018,8,8 这个网址被封了
-    __url = "https://my.ishadowx.net/#"
+
+    __url = "https://us.ishadowx.net"
 
     # 我用的是macbook, 所以替换方法是接下来的处理
     # 桌面复制的配置文件路径,在这个路径的文件读取 把代码写完成在换正式路径
@@ -108,16 +108,9 @@ class Ishadowx:
 
         if response_html is not None:
             ip_list = re.findall('IP Address:<span id="ip[a-z]{3,4}">(.*?)</span>', response_html)
-
-            print(ip_list)
-
             port_list = re.findall('Port:<span id="port[a-z]{3,4}">([0-9]{5})', response_html)
-
-            print(port_list)
-
             password_list = re.findall('<span id="pw[a-z]{3,4}">([a-z.\-0-9]{1,17})', response_html)
-
-            print(password_list)
+            print([{"ip": x, "port": y, "password": z} for x in ip_list for y in port_list for z in password_list])
 
 
 class Blog:
@@ -176,10 +169,10 @@ class Blog:
 
 if __name__ == "__main__":
     # # ishadow的
-    # ishadow = Ishadowx()
-    # ishadow.run()
+    ishadow = Ishadowx()
+    ishadow.run()
 
-    # # 某人博客的
+    # 某人博客的
     # blog = Blog()
     # blog.fetch_page()
 
