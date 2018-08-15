@@ -81,7 +81,6 @@ def url_open(url, data=None):
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
 class Shadow:
-
     __url = "https://us.ishadowx.net"
 
     # 我用的是macbook, 所以替换方法是接下来的处理
@@ -181,7 +180,5 @@ if __name__ == "__main__":
     # shadow.open_preference_plist()
 
     # 某人博客的
-    # blog = Blog()
-    # blog.fetch_page()
-
-    pass
+    blog = Blog()
+    blog.fetch_page()
