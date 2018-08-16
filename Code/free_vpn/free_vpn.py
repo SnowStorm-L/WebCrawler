@@ -12,6 +12,7 @@ import urllib.response
 from biplist import *
 from urllib import error
 import base64
+import json
 
 
 def url_open(url, data=None):
@@ -110,7 +111,11 @@ class Ishadowx:
             ip_list = re.findall('IP Address:<span id="ip[a-z]{3,4}">(.*?)</span>', response_html)
             port_list = re.findall('Port:<span id="port[a-z]{3,4}">([0-9]{5})', response_html)
             password_list = re.findall('<span id="pw[a-z]{3,4}">([a-z.\-0-9]{1,17})', response_html)
-            print([{"ip": x, "port": y, "password": z} for x in ip_list for y in port_list for z in password_list])
+            info_list = list()
+            for (idx, (ip, port, password)) in enumerate(zip(ip_list, port_list, password_list)):
+                info_list.append({"ip": ip, "port": port, "password": password})
+            json_str = json.dumps(info_list)
+            print(json_str)
 
 
 class Blog:
@@ -126,9 +131,8 @@ class Blog:
                 detail_info = url_open(detail_url)
                 re_ss_list = re.findall('ss://(.*?)</p>', detail_info)
                 re_ssr_list = re.findall('ssr://(.*?)</p>', detail_info)
-
-                self.remake_ssr_list(re_ssr_list)
-                self.remake_ss_list(re_ss_list)
+                json_str = json.dumps(self.remake_ssr_list(re_ssr_list) + self.remake_ss_list(re_ss_list))
+                print(json_str)
 
     def remake_ss_list(self, re_ss_list):
         decode_list = [self.decode_base64(x) for x in re_ss_list if self.decode_base64(x) is not None]
@@ -136,7 +140,8 @@ class Blog:
         key_list = ["method", "password", "server", "server_port"]
         value_list = list(map(lambda x: x.split(), sub_list))
         remake_result = [{key: value for key, value in zip(key_list, x)} for x in value_list]
-        print(remake_result)
+        # print(remake_result)
+        return remake_result
 
     def remake_ssr_list(self, re_ssr_list):
         decode_list = [self.decode_base64(x) for x in re_ssr_list if self.decode_base64(x) is not None]
@@ -151,7 +156,8 @@ class Blog:
         for idx, element in enumerate(value_list):
             element.append(decode_password_list[idx])
         remake_result = [{key: value for key, value in zip(key_list, x)} for x in value_list]
-        print(remake_result)
+        # print(remake_result)
+        return remake_result
 
     @staticmethod
     def decode_base64(data):
@@ -169,11 +175,11 @@ class Blog:
 
 if __name__ == "__main__":
     # # ishadow的
-    ishadow = Ishadowx()
-    ishadow.run()
+    # ishadow = Ishadowx()
+    # ishadow.run()
 
     # 某人博客的
-    # blog = Blog()
-    # blog.fetch_page()
+    blog = Blog()
+    blog.fetch_page()
 
     pass
