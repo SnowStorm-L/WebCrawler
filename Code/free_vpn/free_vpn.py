@@ -80,7 +80,7 @@ def url_open(url, data=None):
 
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
-class Ishadowx:
+class Shadow:
 
     __url = "https://us.ishadowx.net"
 
@@ -174,12 +174,12 @@ class Blog:
 
 
 if __name__ == "__main__":
-    # # ishadow的
-    # ishadow = Ishadowx()
-    # ishadow.run()
+    # ishadow的
+    shadow = Shadow()
+    shadow.run()
 
     # 某人博客的
-    blog = Blog()
-    blog.fetch_page()
+    # blog = Blog()
+    # blog.fetch_page()
 
     pass
