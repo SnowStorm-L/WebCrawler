@@ -100,6 +100,7 @@ class Shadow:
         for each_line in server_list:
             # 这里是个数组
             # 数组里面每个data,都可以通过Xcode,ObjC的writeToFile函数,写入一个plist文件里面,打开查看
+            # (Shadowsock文件夹里面有个例子, server_info.plist 就是一个ss账号的信息了)
             # 剩下的工作就是怎么把数据替换进去了.
             # 我看其它端的配置文件都是json构造的, mac上plist文件存储,稍微不同 有空再继续研究
             print(each_line)
@@ -177,6 +178,7 @@ if __name__ == "__main__":
     # ishadow的
     shadow = Shadow()
     shadow.run()
+    shadow.open_preference_plist()
 
     # 某人博客的
     # blog = Blog()
