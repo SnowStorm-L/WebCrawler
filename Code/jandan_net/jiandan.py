@@ -9,7 +9,7 @@
 import urllib.request
 import urllib.response
 import re
-# import hashlib
+import uuid
 import base64
 
 
@@ -73,6 +73,22 @@ class JianDanImage:
             img_url_list.extend(img_url)
 
         return img_url_list
+
+    def download_img(self, store_path):
+        # 有空加个多线程?
+        count = 0
+        img_list = self.find_image_url()
+        print("total - {0}".format(len(img_list)))
+        for url in img_list:
+            data = urllib.request.urlopen(url).read()
+            img_type = "." + url.split(".")[-1]
+            img_path = store_path + "/" + str(uuid.uuid4()) + img_type
+            print(img_path)
+            if data is not None:
+                with open(img_path, "wb") as file:
+                    count += 1
+                    print("writing - {0}".format(count))
+                    file.write(data)
 
     def decode_hash_value(self, hash_value):
         return self.base64_decode(hash_value)
@@ -142,5 +158,5 @@ class JianDanImage:
 
 if __name__ == "__main__":
     image = JianDanImage()
-    img_list = image.find_image_url()
-    print(img_list)
+    download_path = "/Users/l/Desktop/jiandan"
+    image.download_img(download_path)
