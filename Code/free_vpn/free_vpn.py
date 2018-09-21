@@ -177,7 +177,6 @@ if __name__ == "__main__":
     # ishadow的
     shadow = Shadow()
     shadow.run()
-    # shadow.open_preference_plist()
 
     # 某人博客的
     blog = Blog()

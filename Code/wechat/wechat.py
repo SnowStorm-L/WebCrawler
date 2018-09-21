@@ -14,7 +14,8 @@ import os
 
 from selenium.webdriver import PhantomJS
 
-# 微信公众号 广州移动 12点左右会发流量
+# 微信公众号 广州移动 12点左右会发流量(9月21号更新, 活动已经变了)
+
 
 # 问题
 # 1,从weixinsogou网址获取的消息并不及时, 比在手机App里的消息慢了20分钟
