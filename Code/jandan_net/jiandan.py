@@ -11,27 +11,65 @@ import urllib.response
 import re
 import uuid
 import base64
+import random
 
 
 # https://baike.baidu.com/item/robots/5243374?fr=aladdin
 # robots.txt 文件 对搜索引擎爬虫的建议性限制吧
 
 class JianDanImage:
-    __image_url = "http://jandan.net/ooxx/"
+    __ooxx_url = "http://jandan.net/ooxx/"
+    __pic_url = "http://jandan.net/pic/"
 
     @staticmethod
     def url_open(url, data=None):
-        request = urllib.request.Request(url)
-        request.add_header('User-Agent',
-                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) '
-                           'Version/11.1 Safari/605.1.15')
-        response = urllib.request.urlopen(request, data)
-        return response.read()
-
-    def find_image_url(self, from_page=0, to_page=45, filter_score=0):
-        page_list = [self.__image_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
-        img_url_list = []
-
+        try:
+            request = urllib.request.Request(url)
+            request.add_header('User-Agent',
+                               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) '
+                               'Version/11.1 Safari/605.1.15')
+            response = urllib.request.urlopen(request, data)
+            return response.read()
+        except Exception as e:
+            print("url_open error", e)
+            return None
+    """
+    @staticmethod
+    def url_open(url, data=None):
+        try:
+            proxy_collection = [{'http': '39.137.77.66:8080'}, {'http': '43.239.79.55:3128'},
+                                {'http': '185.22.174.65:1448'}, {'http': '117.191.11.78:8080'}]
+            proxy = random.choice(proxy_collection)
+            proxy_support = urllib.request.ProxyHandler(proxy)
+            opener = urllib.request.build_opener(proxy_support)
+            print(proxy)
+            USER_AGENTS = random.choice([
+                "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; AcooBrowser; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+                "Mozilla/4.0 (compatible; MSIE 7.0; AOL 9.5; AOLBuild 4337.35; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+                "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)",
+                "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 2.0.50727; Media Center PC 6.0)",
+                "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 5.2; .NET CLR 1.1.4322; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 3.0.04506.30)",
+                "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN) AppleWebKit/523.15 (KHTML, like Gecko, Safari/419.3) Arora/0.3 (Change: 287 c9dfb30)",
+                "Mozilla/5.0 (X11; U; Linux; en-US) AppleWebKit/527+ (KHTML, like Gecko, Safari/419.3) Arora/0.6",
+                "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.2pre) Gecko/20070215 K-Ninja/2.1.1",
+                "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9) Gecko/20080705 Firefox/3.0 Kapiko/3.0",
+                "Mozilla/5.0 (X11; Linux i686; U;) Gecko/20070322 Kazehakase/0.4.5",
+                "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko Fedora/1.9.0.8-1.fc10 Kazehakase/0.5.6",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.20 (KHTML, like Gecko) Chrome/19.0.1036.7 Safari/535.20",
+                "Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52",
+            ])
+            print(USER_AGENTS)
+            opener.addheaders = [('User-Agent', USER_AGENTS)]
+            response = opener.open(url, data=data)
+            return response.read()
+        except Exception as err:
+            print(err)
+            return None
+        """
+    def find_image_url(self, from_page=101, to_page=300, filter_score=0):
+        page_list = [self.__pic_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
+        self.count = 0
         if filter_score < 0:
             limit = 0
         elif filter_score > 1:
@@ -42,13 +80,18 @@ class JianDanImage:
         current_page_number = 0
 
         for url in page_list:
+            print(url)
+            content = self.url_open(url)
 
-            html_str = self.url_open(url).decode('utf-8')
+            if content is None:
+                continue
+
+            html_str = content.decode('utf-8')
 
             load_page_number = int(re.findall('"current-comment-page">\[(.*?)]</span>', html_str)[0])
 
             if current_page_number == load_page_number:
-                return img_url_list
+                return
 
             current_page_number = load_page_number
 
@@ -69,26 +112,23 @@ class JianDanImage:
                 img_hash_list = [idx[0] for idx in list(filter(lambda x: x[1] > limit, tuple_list))]
 
             img_url = ["http:" + self.decode_hash_value(idx) for idx in img_hash_list]
+            for element in img_url:
+                self.download_img(element, "/Users/l/Desktop/wuliao")
 
-            img_url_list.extend(img_url)
-
-        return img_url_list
-
-    def download_img(self, store_path):
+    def download_img(self, url, store_path):
         # 有空加个多线程?
-        count = 0
-        img_list = self.find_image_url()
-        print("total - {0}".format(len(img_list)))
-        for url in img_list:
-            data = urllib.request.urlopen(url).read()
-            img_type = "." + url.split(".")[-1]
-            img_path = store_path + "/" + str(uuid.uuid4()) + img_type
-            print(img_path)
-            if data is not None:
-                with open(img_path, "wb") as file:
-                    count += 1
-                    print("writing - {0}".format(count))
-                    file.write(data)
+        data = self.url_open(url)
+        if data is None:
+            self.count += 1
+            print("writing - {0}".format(self.count))
+            return
+        img_type = "." + url.split(".")[-1]
+        img_path = store_path + "/" + str(uuid.uuid4()) + img_type
+        print(img_path)
+        with open(img_path, "wb") as file:
+            self.count += 1
+            print("writing - {0}".format(self.count))
+            file.write(data)
 
     def decode_hash_value(self, hash_value):
         return self.base64_decode(hash_value)
@@ -158,5 +198,4 @@ class JianDanImage:
 
 if __name__ == "__main__":
     image = JianDanImage()
-    download_path = "/Users/l/Desktop/jiandan"
-    image.download_img(download_path)
+    image.find_image_url()
