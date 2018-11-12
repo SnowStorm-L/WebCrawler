@@ -81,6 +81,7 @@ def url_open(url, data=None):
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
 class Shadow:
+    # 百度搜索ishadow关键字, 找最新网址
     __url = "https://us.ishadowx.net"
 
     # 我用的是macbook, 所以替换方法是接下来的处理
@@ -118,66 +119,7 @@ class Shadow:
             print(json_str)
 
 
-class Blog:
-
-    def fetch_page(self):
-        # 就不全部页拿了, 旧的估计也失效了
-        # https://www.hinwen.com/page/2/?s=ssr
-        html_string = url_open("https://www.hinwen.com/?s=ssr")
-
-        if html_string is not None:
-            detail_list = re.findall('href="(.*?)" rel="bookmark">免费SS/SSR分享', html_string)
-            for detail_url in detail_list:
-                detail_info = url_open(detail_url)
-                re_ss_list = re.findall('ss://(.*?)</p>', detail_info)
-                re_ssr_list = re.findall('ssr://(.*?)</p>', detail_info)
-                json_str = json.dumps(self.remake_ssr_list(re_ssr_list) + self.remake_ss_list(re_ss_list))
-                print(json_str)
-
-    def remake_ss_list(self, re_ss_list):
-        decode_list = [self.decode_base64(x) for x in re_ss_list if self.decode_base64(x) is not None]
-        sub_list = [re.sub("[:@]", " ", x) for x in decode_list]
-        key_list = ["method", "password", "server", "server_port"]
-        value_list = list(map(lambda x: x.split(), sub_list))
-        remake_result = [{key: value for key, value in zip(key_list, x)} for x in value_list]
-        # print(remake_result)
-        return remake_result
-
-    def remake_ssr_list(self, re_ssr_list):
-        decode_list = [self.decode_base64(x) for x in re_ssr_list if self.decode_base64(x) is not None]
-        # /?后面都是些辅助参数, 例如混淆参数这些, 对实际获取连接ssr没太大作用
-        # 如果非要解析出来, 可以按照ssr的构造说明去解析
-        split_list = [x[:str(x).find("/?")] for x in decode_list]
-        sub_list = [re.sub("[:]", " ", x) for x in split_list]
-        value_list_with_encode_password = list(map(lambda x: x.split(), sub_list))
-        decode_password_list = list(map(lambda x: self.decode_base64(x[-1]), value_list_with_encode_password))
-        value_list = [x[:-1] for x in value_list_with_encode_password]
-        key_list = ["server", "port", "protocol", "method", "obfs", "password"]
-        for idx, element in enumerate(value_list):
-            element.append(decode_password_list[idx])
-        remake_result = [{key: value for key, value in zip(key_list, x)} for x in value_list]
-        # print(remake_result)
-        return remake_result
-
-    @staticmethod
-    def decode_base64(data):
-        origin_data = data
-        missing_padding = 4 - len(data) % 4
-        if missing_padding:
-            data += '=' * missing_padding
-        try:
-            data = str(data).replace("–", "+").replace("_", "/")
-            return base64.b64decode(data).decode('utf-8').replace("\n", "")
-        except Exception as e:
-            print('解密: %s 失败 \n失败原因: %s\n原始数据: %s' % (data, e, origin_data))
-            return None
-
-
 if __name__ == "__main__":
     # ishadow的
     shadow = Shadow()
     shadow.run()
-
-    # 某人博客的
-    blog = Blog()
-    blog.fetch_page()
