@@ -49,3 +49,7 @@ if __name__ == '__main__':
     check_tickets = RailwayTickets()
     # ajax 换页 二维码 or 账号密码
     check_tickets.login()
+
+
+
+
