@@ -68,8 +68,8 @@ class JianDanImage:
             print("url_open error", e)
             return None
 
-    def fetch_image(self, from_page=0, to_page=300, filter_score=0, store_path="/Users/l/Desktop/wuliao"):
-        page_list = [self.__pic_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
+    def fetch_image(self, from_page=0, to_page=300, filter_score=0, store_path="/Users/l/Desktop/jiandan"):
+        page_list = [self.__ooxx_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
         self.download_counter = 0
         if filter_score < 0:
             limit = 0

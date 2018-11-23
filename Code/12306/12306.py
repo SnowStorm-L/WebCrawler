@@ -18,38 +18,47 @@
 
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 
 import time
 
 
 class RailwayTickets:
-    user_name = '2716251756'
-    pwd = '123123123'
-    driver = webdriver.Safari()
+    username = ''
+    pwd = ''
+    driver = webdriver.Chrome()
 
     def login(self):
         driver = self.driver
         driver.maximize_window()
         driver.get("https://kyfw.12306.cn/otn/resources/login.html")
         # 等100秒找元素, 0.5秒找一次
-        # WebDriverWait(driver, 100, 0.5).until(EC.presence_of_element_located((By.CLASS_NAME, 'login-account')))
-        # driver.find_element_by_id('J-userName').clear()
-        # driver.find_element_by_id('J-userName').send_keys('18702069517')
-        # driver.find_element_by_id('J-password').clear()
-        # driver.find_element_by_id('J-password').send_keys('')
-        # driver.find_element_by_id('J-login').click()
+        WebDriverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.CLASS_NAME, 'login-account')))
+        driver.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
 
-        print(driver.page_source)
-        # driver.close()
+        WebDriverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-userName')))
+        user_name = driver.find_element_by_id('J-userName')
+        user_name.click()
+        user_name.clear()
+        user_name.send_keys(self.username)
+
+        WebDriverWait(driver, 100, 0.5).until(ec.visibility_of_element_located((By.ID, 'J-password')))
+        password = driver.find_element_by_id('J-password')
+        password.click()
+        password.clear()
+        password.send_keys(self.pwd)
+
+        img = driver.find_element_by_xpath("//*[@id = 'J-loginImg']")
+        print(img)
+
+        login = driver.find_element_by_xpath("//*[@id = 'J-login']")
+        # login.click()
+
+        # print(driver.page_source)
+        driver.close()
 
 
 if __name__ == '__main__':
     check_tickets = RailwayTickets()
-    # ajax 换页 二维码 or 账号密码
     check_tickets.login()
-
-
-
-
