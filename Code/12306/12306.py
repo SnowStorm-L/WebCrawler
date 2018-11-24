@@ -25,8 +25,8 @@ import time
 
 
 class RailwayTickets:
-    username = ''
-    pwd = ''
+    username = '123123123'
+    pwd = '123123123'
     driver = webdriver.Chrome()
 
     def login(self):
@@ -37,7 +37,7 @@ class RailwayTickets:
         WebDriverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.CLASS_NAME, 'login-account')))
         driver.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
 
-        WebDriverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-userName')))
+        WebDriverWait(driver, 100, 0.5).until(ec.visibility_of_element_located((By.ID, 'J-userName')))
         user_name = driver.find_element_by_id('J-userName')
         user_name.click()
         user_name.clear()

@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 selenium = "==3.13.0"
 biplist = "*"
+xlrd = "*"
+xlwt = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
