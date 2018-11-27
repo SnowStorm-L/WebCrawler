@@ -22,6 +22,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
 
+import random
+
 import time
 
 
@@ -70,17 +72,22 @@ class RailwayTickets:
 
         login_img = driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
-        for location in self.location_list:
-            offset_x, offset_y = location.split(',')
-            print('click offset_x %s offset_y %s' % (offset_x, offset_y))
-            ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
+        get_captcha = "https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&%d" % random.uniform(1, 0)
+
+        
+
+
+        # for location in self.location_list:
+        #     offset_x, offset_y = location.split(',')
+        #     print('click offset_x %s offset_y %s' % (offset_x, offset_y))
+        #     ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
 
         # login = driver.find_element_by_xpath("//*[@id = 'J-login']")
         # login.click()
 
         # print(driver.page_source)
-        time.sleep(20)
-        # driver.close()
+        # time.sleep(20)
+        driver.close()
 
 
 if __name__ == '__main__':
