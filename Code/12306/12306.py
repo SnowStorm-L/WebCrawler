@@ -72,22 +72,22 @@ class RailwayTickets:
 
         login_img = driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
-        get_captcha = "https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&%d" % random.uniform(1, 0)
+        # 获取验证码
+        # "https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&%d" % random.uniform(1, 0)
 
-        
+        # 点击验证码
+        for location in self.location_list:
+            offset_x, offset_y = location.split(',')
+            print('click offset_x %s offset_y %s' % (offset_x, offset_y))
+            ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
 
-
-        # for location in self.location_list:
-        #     offset_x, offset_y = location.split(',')
-        #     print('click offset_x %s offset_y %s' % (offset_x, offset_y))
-        #     ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
-
-        # login = driver.find_element_by_xpath("//*[@id = 'J-login']")
-        # login.click()
+        # 点击登录
+        login = driver.find_element_by_xpath("//*[@id = 'J-login']")
+        login.click()
 
         # print(driver.page_source)
         # time.sleep(20)
-        driver.close()
+        # driver.close()
 
 
 if __name__ == '__main__':
