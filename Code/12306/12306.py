@@ -23,7 +23,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
 
 import random
-
+import base64
 import time
 
 
@@ -70,10 +70,24 @@ class RailwayTickets:
 
         driver.implicitly_wait(30)
 
+        # 获取验证码图片, 写入本地
+
+        # 图片元素加载
         login_img = driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
-        # 获取验证码
-        # "https://kyfw.12306.cn/passport/captcha/captcha-image64?login_site=E&module=login&rand=sjrand&%d" % random.uniform(1, 0)
+        # # 图片
+        # login_img_src = driver.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
+        # split_index = login_img_src.find(',')
+        # base64_str = login_img_src[split_index + 1:]
+        #
+        # img_data = base64.b64decode(base64_str)
+        #
+        # file = open('login_img.jpg', 'wb')
+        # file.write(img_data)
+        # file.close()
+
+        # 识别图片
+
 
         # 点击验证码
         for location in self.location_list:
@@ -82,8 +96,8 @@ class RailwayTickets:
             ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
 
         # 点击登录
-        login = driver.find_element_by_xpath("//*[@id = 'J-login']")
-        login.click()
+        # login = driver.find_element_by_xpath("//*[@id = 'J-login']")
+        # login.click()
 
         # print(driver.page_source)
         # time.sleep(20)
