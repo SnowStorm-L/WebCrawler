@@ -76,24 +76,50 @@ class RailwayTickets:
         login_img = driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
         # # 图片
-        # login_img_src = driver.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
-        # split_index = login_img_src.find(',')
-        # base64_str = login_img_src[split_index + 1:]
-        #
-        # img_data = base64.b64decode(base64_str)
-        #
-        # file = open('login_img.jpg', 'wb')
-        # file.write(img_data)
-        # file.close()
+        login_img_src = driver.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
+        split_index = login_img_src.find(',')
+        base64_str = login_img_src[split_index + 1:]
+
+        img_data = base64.b64decode(base64_str)
+
+        file = open('login_img.jpg', 'wb')
+        file.write(img_data)
+        file.close()
 
         # 识别图片
 
+        open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
+        driver.execute_script(open_google_vision_js)
 
+        # 获取谷歌页面的句柄
+        google_window_handle = driver.current_window_handle
+
+        all_window_handles = driver.window_handles
+
+        time.sleep(60)
+        driver.switch_to.window(driver.window_handles[1])
+
+        js_code = "var q=document.documentElement.scrollTop=750"
+        driver.execute_script(js_code)
+
+        # for window_handle in all_window_handles:
+        #     if window_handle is google_window_handle:
+        #         driver.switch_to.window(window_handle)
+        #         break
+
+        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'vision_demo_section')))
+        iframe = driver.find_element_by_xpath("//*[@id = 'vision_demo_section']").find_element_by_tag_name('iframe')
+        driver.switch_to.frame(iframe)
+
+        aab = driver.find_element_by_xpath("//*[@id = 'input']")
+        print(444)
+        aab.send_keys("/Users/l/Desktop/WebCrawler/Code/12306/login_img.jpg")
+        print(555)
         # 点击验证码
-        for location in self.location_list:
-            offset_x, offset_y = location.split(',')
-            print('click offset_x %s offset_y %s' % (offset_x, offset_y))
-            ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
+        # for location in self.location_list:
+        #     offset_x, offset_y = location.split(',')
+        #     print('click offset_x %s offset_y %s' % (offset_x, offset_y))
+        #     ActionChains(driver).move_to_element_with_offset(login_img, offset_x, offset_y).click().perform()
 
         # 点击登录
         # login = driver.find_element_by_xpath("//*[@id = 'J-login']")
