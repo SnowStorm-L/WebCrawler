@@ -16,11 +16,13 @@
 
 # https://kyfw.12306.cn/otn/leftTicket/init?linktypeid=wf&fs=广州南,IZQ&ts=北京,BJP&date=2018-11-13,2018-11-14&flag=N,N,Y
 
+import selenium
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait as driverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
+
 
 import random
 import base64
@@ -44,10 +46,24 @@ class RailwayTickets:
 
     driver = webdriver.Chrome()
 
+    handler_set = set()
+
     def login(self):
         driver = self.driver
         driver.maximize_window()
-        driver.get("https://kyfw.12306.cn/otn/resources/login.html")
+        driver.set_page_load_timeout(60)
+
+        time.sleep(5)
+
+        try:
+            driver.get("https://kyfw.12306.cn/otn/resources/login.html")
+        except selenium.common.exceptions.TimeoutException:
+            print("time out of 60 s")
+            driver.execute_script('window.stop()')
+
+        while driver.current_url != 'https://kyfw.12306.cn/otn/resources/login.html':
+            driver.refresh()
+
         # 等100秒找元素, 0.5秒找一次
 
         driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.CLASS_NAME, 'login-account')))
@@ -73,7 +89,7 @@ class RailwayTickets:
         # 获取验证码图片, 写入本地
 
         # 图片元素加载
-        login_img = driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
+        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
         # # 图片
         login_img_src = driver.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
@@ -86,35 +102,32 @@ class RailwayTickets:
         file.write(img_data)
         file.close()
 
-        # 识别图片
+        time.sleep(5)
 
+        # 识别图片
         open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
         driver.execute_script(open_google_vision_js)
 
-        # 获取谷歌页面的句柄
-        google_window_handle = driver.current_window_handle
+        time.sleep(2)
 
-        all_window_handles = driver.window_handles
+        driver.switch_to.window(driver.window_handles[-1])
 
-        time.sleep(60)
-        driver.switch_to.window(driver.window_handles[1])
+        # 有时换过去 页面没加载出来
+        time.sleep(2)
 
-        js_code = "var q=document.documentElement.scrollTop=750"
-        driver.execute_script(js_code)
+        print(driver.current_url)
 
-        # for window_handle in all_window_handles:
-        #     if window_handle is google_window_handle:
-        #         driver.switch_to.window(window_handle)
-        #         break
+        print(driver.page_source[:300])
 
         driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'vision_demo_section')))
+        js_code = "var a = document.documentElement.scrollTop=750"
+        driver.execute_script(js_code)
         iframe = driver.find_element_by_xpath("//*[@id = 'vision_demo_section']").find_element_by_tag_name('iframe')
         driver.switch_to.frame(iframe)
+        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'input')))
+        input_img = driver.find_element_by_xpath("//*[@id = 'input']")
+        input_img.send_keys("/Users/l/Desktop/WebCrawler/Code/12306/login_img.jpg")
 
-        aab = driver.find_element_by_xpath("//*[@id = 'input']")
-        print(444)
-        aab.send_keys("/Users/l/Desktop/WebCrawler/Code/12306/login_img.jpg")
-        print(555)
         # 点击验证码
         # for location in self.location_list:
         #     offset_x, offset_y = location.split(',')
