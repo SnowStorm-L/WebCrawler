@@ -43,17 +43,9 @@ class TranslateGoogle:
 
     def get_tk(self, input_str):
 
-        html = url_open(self._tkk_url).decode('utf-8')
-        (start, end) = re.search("TKK=.*?VERSION_LABEL", str(html)).span()
-
-        js_code = html[start: end]
-        print('js生成TKK请求参数的代码 ', js_code)
-
-        parameter_list = re.findall('var.*?;', js_code)
-
-        number = re.search('return.*?\+', js_code).group(0)[7:-1]
-        a = int(str(parameter_list[0])[9:-1])
-        b = int(str(parameter_list[1])[9:-1])
+        a = 4211913557
+        b = -4140706334
+        number = 422392
 
         e = "{0}.{1}".format(number, a + b).split('.')
 
