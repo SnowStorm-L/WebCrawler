@@ -95,7 +95,7 @@ class TranslateGoogle:
 # 谷歌翻译
 # 重点是翻译时候的header里面需要tk这个键的值, 如果这个值不正确的话翻译请求是会被禁止的
 # 这个tk的值的生成算法 可以在 https://translate.google.cn 审查元素 找到以下js代码
-
+# go jfk-button-action 翻译按钮id
 #    谷歌翻译 TKK 转换源js代码
 #     sr = function(a, b)
 #     {
