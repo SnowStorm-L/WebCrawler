@@ -20,8 +20,10 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait as driverWait
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
+
 
 from PIL import Image
 
@@ -34,6 +36,8 @@ class RailwayTickets:
     username = '123123123'
     pwd = '123123123'
 
+    url_of_12306 = "https://kyfw.12306.cn/otn/resources/login.html"
+
     # 图宽 300, 高190
     # 刷新那个按钮 行高 30
     # start_x 300 / 4(列) / 2(中间点) = 37.5
@@ -45,7 +49,7 @@ class RailwayTickets:
     2 4 6 8
     """
 
-    driver = webdriver.Chrome()
+    browser = webdriver.Chrome()
 
     handler_set = set()
 
@@ -56,8 +60,7 @@ class RailwayTickets:
 
         origin_img = Image.open(img_path)
 
-        img_width = origin_img.size[0]
-        img_height = origin_img.size[1]
+        img_width, img_height = origin_img.size
 
         top_rect = (0, 0, img_width, 30)
 
@@ -89,50 +92,35 @@ class RailwayTickets:
         return img_list
 
     def login(self):
-        driver = self.driver
-        driver.maximize_window()
-        driver.set_page_load_timeout(60)
+        browser = webdriver.Chrome()
 
-        time.sleep(5)
+        wait = driverWait(browser, 100, 0.5)
 
-        try:
-            driver.get("https://kyfw.12306.cn/otn/resources/login.html")
-        except selenium.common.exceptions.TimeoutException:
-            print("time out of 60 s")
-            driver.execute_script('window.stop()')
-
-        while driver.current_url != 'https://kyfw.12306.cn/otn/resources/login.html':
-            driver.refresh()
+        browser.get(self.url_of_12306)
 
         # 等100秒找元素, 0.5秒找一次
 
-        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.CLASS_NAME, 'login-account')))
+        wait.until(ec.presence_of_element_located((By.CLASS_NAME, 'login-account')))
 
-        driver.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
+        browser.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
 
-        driver.implicitly_wait(30)
-
-        driverWait(driver, 100, 0.5).until(ec.visibility_of_element_located((By.ID, 'J-userName')))
-        user_name = driver.find_element_by_id('J-userName')
+        wait.until(ec.visibility_of_element_located((By.ID, 'J-userName')))
+        user_name = browser.find_element_by_id('J-userName')
         user_name.click()
         user_name.clear()
         user_name.send_keys(self.username)
 
-        driverWait(driver, 100, 0.5).until(ec.visibility_of_element_located((By.ID, 'J-password')))
-        password = driver.find_element_by_id('J-password')
+        wait.until(ec.visibility_of_element_located((By.ID, 'J-password')))
+        password = browser.find_element_by_id('J-password')
         password.click()
         password.clear()
         password.send_keys(self.pwd)
 
-        driver.implicitly_wait(30)
-
-        # 获取验证码图片, 写入本地
-
         # 图片元素加载
-        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
+        wait.until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
 
         # # 图片
-        login_img_src = driver.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
+        login_img_src = browser.find_element_by_xpath("//*[@id = 'J-loginImg']").get_attribute("src")
         split_index = login_img_src.find(',')
         base64_str = login_img_src[split_index + 1:]
 
@@ -142,39 +130,27 @@ class RailwayTickets:
 
         origin_img_name = 'origin_img.png'
 
-        origin_img = open(origin_img_name, 'wb')
-        origin_img.write(img_data)
-        origin_img.close()
-
-        time.sleep(3)
-
-        list_img = self.crop_img(origin_img_name)
-
-        time.sleep(5)
+        with open(origin_img_name, 'wb') as origin_img:
+            origin_img.write(img_data)
+            origin_img.close()
 
         # 识别图片
+
         open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
-        driver.execute_script(open_google_vision_js)
+        browser.execute_script(open_google_vision_js)
+        browser.switch_to.window(browser.window_handles[-1])
 
-        time.sleep(2)
+        wait.until(lambda x: x.find_element_by_id('vision_demo_section'))
 
-        driver.switch_to.window(driver.window_handles[-1])
 
-        # 有时换过去 页面没加载出来
-        time.sleep(2)
+        # js_code = "var a = document.documentElement.scrollTop=750"
+        # browser.execute_script(js_code)
+        # iframe = browser.find_element_by_xpath("//*[@id = 'vision_demo_section']")
+        # browser.switch_to.frame(iframe)
 
-        print(driver.current_url)
-
-        print(driver.page_source[:300])
-
-        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'vision_demo_section')))
-        js_code = "var a = document.documentElement.scrollTop=750"
-        driver.execute_script(js_code)
-        iframe = driver.find_element_by_xpath("//*[@id = 'vision_demo_section']").find_element_by_tag_name('iframe')
-        driver.switch_to.frame(iframe)
-        driverWait(driver, 100, 0.5).until(ec.presence_of_element_located((By.ID, 'input')))
-        input_img = driver.find_element_by_xpath("//*[@id = 'input']")
-        input_img.send_keys('/Users/l/Desktop/WebCrawler/Code/12306/top_img.png')
+        # wait.until(ec.presence_of_element_located((By.ID, 'input')))
+        # input_img = browser.find_element_by_xpath("//*[@id = 'input']")
+        # input_img.send_keys('/Users/l/Desktop/WebCrawler/Code/12306/top_img.png')
 
         # # 点击验证码
         # for location in self.location_list:
@@ -196,6 +172,8 @@ class RailwayTickets:
 if __name__ == '__main__':
     check_tickets = RailwayTickets()
     check_tickets.login()
+
+
 
 
 
