@@ -134,10 +134,17 @@ class RailwayTickets:
             origin_img.write(img_data)
             origin_img.close()
 
+        # google_window_handler = browser.current_window_handle
+
         # 识别图片
 
         open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
         browser.execute_script(open_google_vision_js)
+
+        # wait.until(ec.number_of_windows_to_be(2))
+        # newWindow = [window for window in browser.window_handles if window != google_window_handler][0]
+        # browser.switch_to.window(newWindow)
+
         browser.switch_to.window(browser.window_handles[-1])
 
         wait.until(lambda x: x.find_element_by_id('vision_demo_section'))
