@@ -82,7 +82,7 @@ def url_open(url, data=None):
 
 class Shadow:
     # 百度搜索ishadow关键字, 找最新网址
-    __url = "https://us.ishadowx.net"
+    __url = "https://a.ishadowx.net/"
 
     # 我用的是macbook, 所以替换方法是接下来的处理
     # 桌面复制的配置文件路径,在这个路径的文件读取 把代码写完成在换正式路径
