@@ -23,6 +23,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver import ActionChains
 
 import os
+import re
 from PIL import Image
 import base64
 
@@ -45,14 +46,84 @@ class RailwayTickets:
     2 4 6 8
     """
 
-    options = webdriver.ChromeOptions()
-
-    options.add_argument("--disable-site-isolation-trials")
-
-    # service_args=["--verbose", "--log-path=/Users/l/desktop/log.log"] 桌面输出Chrome运行的log
-    browser = webdriver.Chrome(options=options)
-
     splitted_img_list = []
+    img_content_list = []
+
+
+    def __init__(self):
+
+        options = webdriver.ChromeOptions()
+
+        options.add_argument("--disable-site-isolation-trials")
+
+        # service_args=["--verbose", "--log-path=/Users/l/desktop/log.log"] 桌面输出Chrome运行的log
+        self.browser = webdriver.Chrome(options=options)
+
+        self.browser.maximize_window()
+
+        self.wait = driverWait(self.browser, 100, 0.5)
+
+    def get_verify_img(self):
+
+        self.browser.get(self.url_of_12306)
+        self.browser.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
+
+        # 等待验证码图片加载
+        self.wait.until(ec.visibility_of_element_located((By.ID, 'J-loginImg')))
+
+        # 图片
+        login_img_src = self.browser.find_element_by_id("J-loginImg").get_attribute("src")
+
+        img_data = self.get_img_base64_data(login_img_src)
+
+        origin_img_name = 'origin_img.png'
+
+        with open(origin_img_name, 'wb') as origin_img:
+            origin_img.write(img_data)
+            origin_img.close()
+            self.crop_img(origin_img_name)
+
+
+    def img_recognition(self):
+
+        open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
+
+        self.browser.execute_script(open_google_vision_js)
+
+        self.wait.until(ec.number_of_windows_to_be(2))
+
+        self.browser.switch_to.window(self.browser.window_handles[-1])
+
+        self.wait.until(ec.visibility_of_element_located((By.ID, 'vision_demo_section')))
+
+        self.browser.execute_script("window.scrollTo(0, 750)")
+
+        iframe = self.browser.find_element_by_xpath("//iframe[contains(@height,'150px')]")
+
+        self.browser.switch_to.frame(iframe)
+
+        self.wait.until(ec.presence_of_element_located((By.ID, 'input')))
+
+        input_img = self.browser.find_element_by_id("input")
+
+        input_img.send_keys(self.splitted_img_list[0])
+
+        self.wait.until(ec.visibility_of_element_located((By.ID, "exit")))
+
+        text_list = list(re.findall('"symbol style-scope vs-document">(.*?)</span>', self.browser.page_source))
+        discern_result = ''.join(text_list)[9:]
+
+        print(discern_result)
+
+
+        # self.browser.find_element_by_xpath("//*[@id = 'exit']").click()
+
+        # span class word style-scope vs-document
+        # for idx in self.splitted_img_list:
+        #     input_img.send_keys(self.splitted_img_list[0])
+
+
+
 
     def crop_img(self, img_path):
 
@@ -64,31 +135,16 @@ class RailwayTickets:
 
         top_rect = (0, 0, img_width, 30)
 
-        origin_img.crop(top_rect)
+        rect_list = [(5 * (x + 1) + 67 * x, 40 + y * 72, 72 * (x + 1), 107 + y * 72) for y in range(0, 2)
+                     for x in range(0, 4)]
+        rect_list.insert(0, top_rect)
 
-        # 裁切图片
-        top_img = origin_img.crop(top_rect)
+        for idx, element in enumerate(rect_list):
+            img = origin_img.crop(element)
+            img_name = "%d.png" % idx
+            img.save(img_name)
+            self.splitted_img_list.append(current_work_path + img_name)
 
-        # 保存裁切后的图片
-        top_img.save("top_img.png")
-
-        self.splitted_img_list.append(current_work_path + "top_img.png")
-
-        bottom_rect = (0, 30, img_width, img_height)
-
-        bottom_img = origin_img.crop(bottom_rect)
-
-        width, height = bottom_img.size
-
-        item_width = int(width / 4)
-        item_height = int(height / 2)
-
-        for i in range(4):
-            for j in range(2):
-                box = (i * item_width, j * item_height, (i + 1) * 73, (j + 1) * 80)
-                img = bottom_img.crop(box)
-                img.save("%d_%d.png" % (i, j))
-                self.splitted_img_list.append(current_work_path + "%d_%d.png" % (i, j))
 
     @staticmethod
     def get_img_base64_data(origin_str):
@@ -99,69 +155,17 @@ class RailwayTickets:
 
         return base64.b64decode(base64_str)
 
+
     def login(self):
 
-        browser = self.browser
+        self.wait.until(ec.visibility_of_element_located((By.ID, "J-userName")))
+        self.wait.until(ec.visibility_of_element_located((By.ID, "J-password")))
 
-        browser.maximize_window()
-
-        wait = driverWait(browser, 100, 0.5)
-
-        browser.get(self.url_of_12306)
-
-        browser.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
-
-        wait.until(ec.visibility_of_element_located((By.ID, "J-userName")))
-        wait.until(ec.visibility_of_element_located((By.ID, "J-password")))
-
-        user_name = browser.find_element_by_id('J-userName')
-        user_name.send_keys(self.username)
-
-        password = browser.find_element_by_id('J-password')
-        password.send_keys(self.pwd)
-
-        # 等待验证码图片加载
-        wait.until(ec.presence_of_element_located((By.ID, 'J-loginImg')))
-
-        # 图片
-        login_img_src = browser.find_element_by_id("J-loginImg").get_attribute("src")
-
-        img_data = self.get_img_base64_data(login_img_src)
-
-        if img_data is None:
-            print("empty data")
-            return
-
-        origin_img_name = 'origin_img.png'
-
-        with open(origin_img_name, 'wb') as origin_img:
-            origin_img.write(img_data)
-            origin_img.close()
-            self.crop_img('origin_img.png')
-
-        # 识别图片
-
-        open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
-
-        browser.execute_script(open_google_vision_js)
-
-        wait.until(ec.number_of_windows_to_be(2))
-
-        browser.switch_to.window(browser.window_handles[-1])
-
-        wait.until(ec.visibility_of_element_located((By.ID, 'vision_demo_section')))
-
-        browser.execute_script("window.scrollTo(0, 750)")
-
-        iframe = browser.find_element_by_xpath("//iframe[contains(@height,'150px')]")
-
-        browser.switch_to.frame(iframe)
-
-        wait.until(ec.presence_of_element_located((By.ID, 'input')))
-
-        input_img = browser.find_element_by_id("input")
-
-        input_img.send_keys(self.splitted_img_list[0])
+        # user_name = browser.find_element_by_id('J-userName')
+        # user_name.send_keys(self.username)
+        #
+        # password = browser.find_element_by_id('J-password')
+        # password.send_keys(self.pwd)
 
         # # 点击验证码
         # for location in self.location_list:
@@ -180,7 +184,9 @@ class RailwayTickets:
 
 if __name__ == '__main__':
     check_tickets = RailwayTickets()
-    check_tickets.login()
+    check_tickets.get_verify_img()
+    check_tickets.img_recognition()
+
 
 
 
