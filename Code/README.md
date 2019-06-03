@@ -1,2 +1,5 @@
-# https://baike.baidu.com/item/robots/5243374?fr=aladdin
-# robots.txt 文件 对搜索引擎爬虫的建议性限制吧(君子协议, 该爬的还是照样爬)
+### 爬虫练习
+
+1. [iShadow](https://github.com/SnowStorm-L/WebCrawler/tree/master/Code/free_vpn)
+2. [谷歌翻译](https://github.com/SnowStorm-L/WebCrawler/tree/master/Code/google)
+3. [煎蛋网](https://github.com/SnowStorm-L/WebCrawler/tree/master/Code/jandan_net)
