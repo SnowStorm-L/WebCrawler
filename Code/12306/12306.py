@@ -28,7 +28,6 @@ from PIL import Image
 import base64
 
 
-
 class RailwayTickets:
     username = '123123123'
     pwd = '123123123'
@@ -39,8 +38,8 @@ class RailwayTickets:
     # 刷新那个按钮 行高 30
     # start_x 300 / 4(列) / 2(中间点) = 37.5
     # start_y (190 - 30(刷新那个按钮 行高)) / 2(行) / 2(中间点) + 30(起始行高) = 70
-    location_list = [ "%d,%d" % (38 + 38 * x, 70 + y * 80) for x in range(0, 7, 2)
-                                                           for y in range(0, 2)]
+    location_list = ["%d,%d" % (38 + 38 * x, 70 + y * 80) for x in range(0, 7, 2)
+                     for y in range(0, 2)]
     """
     1 3 5 7
     2 4 6 8
@@ -49,9 +48,7 @@ class RailwayTickets:
     splitted_img_list = []
     img_content_list = []
 
-
     def __init__(self):
-
         options = webdriver.ChromeOptions()
 
         options.add_argument("--disable-site-isolation-trials")
@@ -64,7 +61,6 @@ class RailwayTickets:
         self.wait = driverWait(self.browser, 100, 0.5)
 
     def get_verify_img(self):
-
         self.browser.get(self.url_of_12306)
         self.browser.find_element_by_xpath("//*[@class = 'login-box']/ul/li[2]").click()
 
@@ -83,9 +79,7 @@ class RailwayTickets:
             origin_img.close()
             self.crop_img(origin_img_name)
 
-
     def img_recognition(self):
-
         open_google_vision_js = 'window.open("https://cloud.google.com/vision/")'
 
         self.browser.execute_script(open_google_vision_js)
@@ -115,18 +109,13 @@ class RailwayTickets:
 
         print(discern_result)
 
-
         # self.browser.find_element_by_xpath("//*[@id = 'exit']").click()
 
         # span class word style-scope vs-document
         # for idx in self.splitted_img_list:
         #     input_img.send_keys(self.splitted_img_list[0])
 
-
-
-
     def crop_img(self, img_path):
-
         current_work_path = os.getcwd() + "/"
 
         origin_img = Image.open(current_work_path + img_path)
@@ -145,19 +134,15 @@ class RailwayTickets:
             img.save(img_name)
             self.splitted_img_list.append(current_work_path + img_name)
 
-
     @staticmethod
     def get_img_base64_data(origin_str):
-
         split_index = origin_str.find(',')
 
         base64_str = origin_str[split_index + 1:]
 
         return base64.b64decode(base64_str)
 
-
     def login(self):
-
         self.wait.until(ec.visibility_of_element_located((By.ID, "J-userName")))
         self.wait.until(ec.visibility_of_element_located((By.ID, "J-password")))
 
@@ -180,25 +165,10 @@ class RailwayTickets:
         # print(driver.page_source)
         # time.sleep(20)
 
-         # browser.quit()
+        # browser.quit()
+
 
 if __name__ == '__main__':
     check_tickets = RailwayTickets()
     check_tickets.get_verify_img()
     check_tickets.img_recognition()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

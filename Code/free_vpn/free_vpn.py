@@ -81,29 +81,7 @@ def url_open(url, data=None):
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
 class Shadow:
-    # 百度搜索ishadow关键字, 找最新网址
-    __url = "https://a.ishadowx.net/"
-
-    # 我用的是macbook, 所以替换方法是接下来的处理
-    # 桌面复制的配置文件路径,在这个路径的文件读取 把代码写完成在换正式路径
-    # 否则可能损坏配置文件
-    __preference_plist_path = "/Users/l/Desktop/com.jumboapps.shadowsocksx.plist"
-
-    # 这个是配置文件路径
-    # "/Users/l/Library/Preferences/com.jumboapps.shadowsocksx.plist"
-
-    def open_preference_plist(self):
-
-        plist = readPlist(self.__preference_plist_path)
-
-        server_list = plist["key.server.list"]
-        for each_line in server_list:
-            # 这里是个数组
-            # 数组里面每个data,都可以通过Xcode,ObjC的writeToFile函数,写入一个plist文件里面,打开查看
-            # (Shadowsock文件夹里面有个例子, server_info.plist 就是一个ss账号的信息了)
-            # 剩下的工作就是怎么把数据替换进去了.
-            # 我看其它端的配置文件都是json构造的, mac上plist文件存储,稍微不同 有空再继续研究
-            print(each_line)
+    __url = "https://dwz.pm/x"
 
     def run(self):
         response_html = url_open(self.__url)
