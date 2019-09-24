@@ -13,6 +13,7 @@ from biplist import *
 from urllib import error
 import base64
 import json
+import uuid
 
 
 def url_open(url, data=None):
@@ -80,6 +81,8 @@ def url_open(url, data=None):
 
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
+# 配合 https://github.com/yangfeicheung/Shadowsocks-X 使用
+
 class Shadow:
     __url = "https://dwz.pm/x"
 
@@ -90,11 +93,49 @@ class Shadow:
             ip_list = re.findall('IP Address:<span id="ip[a-z]{3,4}">(.*?)</span>', response_html)
             port_list = re.findall('Port:<span id="port[a-z]{3,4}">([0-9]{5})', response_html)
             password_list = re.findall('<span id="pw[a-z]{3,4}">([a-z.\-0-9]{1,17})', response_html)
+
+            with open("../free_vpn/export.json", 'r') as load_f:
+                load_dict = json.load(load_f)
+            load_dict['configs'] = []
+
             info_list = list()
+            ss_list = []
             for (idx, (ip, port, password)) in enumerate(zip(ip_list, port_list, password_list)):
+                encode_str = base64.b64encode(("aes-256-cfb:%s@%s:%s" % (password, ip, port)).encode('utf-8'))
+                ss = "ss://" + str(encode_str, 'utf-8')
+                print(ss)
+                remarks = '%s' % idx
                 info_list.append({"ip": ip, "port": port, "password": password})
+                temp = {
+                    "enable": True,
+                    "password": "isx.yt-07492834",
+                    "method": "aes-256-cfb",
+                    "remarks": "New Server",
+                    "server": "c.isxb.top",
+                    "kcptun": {
+                        "nocomp": False,
+                        "crypt": "aes",
+                        "datashard": 10,
+                        "mtu": 1350,
+                        "mode": "fast",
+                        "arguments": "",
+                        "key": "it's a secrect",
+                        "parityshard": 3
+                    },
+                    "enabled_kcptun": False,
+                    "server_port": 19275,
+                    "remarks_base64": "TmV3IFNlcnZlcg=="
+                }
+                temp.update({"password": password, "server_port": port, 'server': ip, 'remarks': remarks,
+                             'remarks_base64': str(base64.b64encode(remarks.encode('utf-8')), 'utf-8')})
+                ss_list.append(temp)
             json_str = json.dumps(info_list)
             print(json_str)
+            load_dict['configs'] = ss_list
+            print(load_dict)
+
+            with open("../free_vpn/export.json", "w") as dump_f:
+                json.dump(load_dict, dump_f)
 
 
 if __name__ == "__main__":

@@ -49,6 +49,7 @@ import random
            return None
        """
 
+
 # https://baike.baidu.com/item/robots/5243374?fr=aladdin
 # robots.txt 文件 对搜索引擎爬虫的建议性限制吧(君子协议, 该爬的还是照样爬)
 
@@ -106,15 +107,23 @@ class JianDanImage:
             oppose_list = [float(idx) for idx in re.findall(oppose_regular, html_str) if float(idx) != 0.0]
 
             score_list = list(map(lambda x, y: x / (x + y), support_list, oppose_list))
+            # print(html_str)
+            # img_hash_list = list(re.findall('img-hash">(.*?)</span>', html_str))
 
-            img_hash_list = list(re.findall('img-hash">(.*?)</span>', html_str))
+            # http: // ww3.sinaimg.cn / mw600 / 0073ob6Pgy1g5gjlzwe5mj30j60qodki.jpg
 
-            if limit != 0:
-                tuple_list = list(zip(img_hash_list, score_list))
+            img_hash_list = list(re.findall('ww3(.*?)"', html_str))
 
-                img_hash_list = [idx[0] for idx in list(filter(lambda x: x[1] > limit, tuple_list))]
+            print(img_hash_list)
+            #
+            # if limit != 0:
+            #     tuple_list = list(zip(img_hash_list, score_list))
+            #
+            #     img_hash_list = [idx[0] for idx in list(filter(lambda x: x[1] > limit, tuple_list))]
 
-            img_url = ["http:" + self.decode_hash_value(idx) for idx in img_hash_list]
+            img_url = ["http://ww3" + idx for idx in img_hash_list]
+
+
             for element in img_url:
                 self.download_img(element, store_path)
 
