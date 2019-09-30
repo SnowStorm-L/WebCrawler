@@ -72,7 +72,7 @@ class JianDanImage:
             return None
 
     def fetch_image(self, from_page=0, to_page=300, filter_score=0, store_path="/Users/l/Desktop/jiandan"):
-        page_list = [self.__ooxx_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
+        page_list = [self.__pic_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
         self.download_counter = 0
         if filter_score < 0:
             limit = 0
@@ -110,21 +110,20 @@ class JianDanImage:
             # print(html_str)
             # img_hash_list = list(re.findall('img-hash">(.*?)</span>', html_str))
 
-            # http: // ww3.sinaimg.cn / mw600 / 0073ob6Pgy1g5gjlzwe5mj30j60qodki.jpg
+            img_hash_list = list(re.findall('wx3(.*?)"', html_str))
 
-            img_hash_list = list(re.findall('ww3(.*?)"', html_str))
-
-            print(img_hash_list)
+            # print(img_hash_list)
             #
-            # if limit != 0:
-            #     tuple_list = list(zip(img_hash_list, score_list))
-            #
-            #     img_hash_list = [idx[0] for idx in list(filter(lambda x: x[1] > limit, tuple_list))]
+            if limit != 0:
+                tuple_list = list(zip(img_hash_list, score_list))
 
-            img_url = ["http://ww3" + idx for idx in img_hash_list]
+                img_hash_list = [idx[0] for idx in list(filter(lambda x: x[1] > limit, tuple_list))]
 
+            img_url = ["http://wx3" + idx for idx in img_hash_list]
+            img_url = list(filter(lambda index: "mw600" not in index, img_url))
 
             for element in img_url:
+                # print(img_url)
                 self.download_img(element, store_path)
 
     def download_img(self, url, store_path):
