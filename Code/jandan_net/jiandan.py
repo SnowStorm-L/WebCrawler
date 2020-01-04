@@ -11,6 +11,7 @@ import urllib.response
 import re
 import uuid
 import base64
+import datetime
 
 """ 使用代理
 import random
@@ -71,8 +72,11 @@ class JianDanImage:
             print("url_open error", e)
             return None
 
-    def fetch_image(self, from_page=0, to_page=300, filter_score=0, store_path="/Users/l/Desktop/jiandan"):
-        page_list = [self.__pic_url + "page-%s#comments" % str(idx) for idx in range(from_page, to_page + 1)]
+    def fetch_image(self, from_page=1, to_page=300, filter_score=0, store_path="/Users/l/Desktop/jiandan"):
+        page_list = [self.__pic_url + str(base64.b64encode(
+            ("%s-%s#comments" % (datetime.datetime.now().strftime('%Y-%m-%d').replace("-", ""), str(idx))).encode(
+                'utf-8')), 'utf-8')
+                     for idx in range(from_page, to_page + 1)]
         self.download_counter = 0
         if filter_score < 0:
             limit = 0
@@ -83,12 +87,14 @@ class JianDanImage:
 
         current_page_number = 0
 
-        for url in page_list:
-            print(url)
+        for idx, url in enumerate(page_list):
+
             content = self.url_open(url)
 
             if content is None:
                 continue
+
+            print("第:" + str(idx + 1) + "页 链接:" + url)
 
             html_str = content.decode('utf-8')
 
@@ -107,13 +113,13 @@ class JianDanImage:
             oppose_list = [float(idx) for idx in re.findall(oppose_regular, html_str) if float(idx) != 0.0]
 
             score_list = list(map(lambda x, y: x / (x + y), support_list, oppose_list))
-            # print(html_str)
+
             # img_hash_list = list(re.findall('img-hash">(.*?)</span>', html_str))
 
             img_hash_list = list(re.findall('wx3(.*?)"', html_str))
 
             # print(img_hash_list)
-            #
+
             if limit != 0:
                 tuple_list = list(zip(img_hash_list, score_list))
 
@@ -121,10 +127,10 @@ class JianDanImage:
 
             img_url = ["http://wx3" + idx for idx in img_hash_list]
             img_url = list(filter(lambda index: "mw600" not in index, img_url))
-
             for element in img_url:
-                # print(img_url)
-                self.download_img(element, store_path)
+                pass
+                #print(img_url)
+                #self.download_img(element, store_path)
 
     def download_img(self, url, store_path):
         # 有空加个多线程?
