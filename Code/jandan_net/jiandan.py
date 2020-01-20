@@ -128,9 +128,9 @@ class JianDanImage:
             img_url = ["http://wx3" + idx for idx in img_hash_list]
             img_url = list(filter(lambda index: "mw600" not in index, img_url))
             for element in img_url:
-                pass
-                #print(img_url)
-                #self.download_img(element, store_path)
+                # pass
+                print(img_url)
+                self.download_img(element, store_path)
 
     def download_img(self, url, store_path):
         # 有空加个多线程?
