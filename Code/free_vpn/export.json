@@ -13,7 +13,166 @@
   "isDefault": false,
   "pacUrl": null,
   "configs": [
-
+    {
+      "enable": true,
+      "password": "isx.yt-37281355",
+      "method": "aes-256-cfb",
+      "remarks": "0",
+      "server": "a.isxb.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "13116",
+      "remarks_base64": "MA=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-63494910",
+      "method": "aes-256-cfb",
+      "remarks": "1",
+      "server": "b.isxb.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "12555",
+      "remarks_base64": "MQ=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-30877439",
+      "method": "aes-256-cfb",
+      "remarks": "2",
+      "server": "c.isxb.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "19959",
+      "remarks_base64": "Mg=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-85969934",
+      "method": "aes-256-cfb",
+      "remarks": "3",
+      "server": "a.isxc.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "19310",
+      "remarks_base64": "Mw=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-17796149",
+      "method": "aes-256-cfb",
+      "remarks": "4",
+      "server": "b.isxc.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "17018",
+      "remarks_base64": "NA=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-92184752",
+      "method": "aes-256-cfb",
+      "remarks": "5",
+      "server": "c.isxc.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "19046",
+      "remarks_base64": "NQ=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-85969934",
+      "method": "aes-256-cfb",
+      "remarks": "6",
+      "server": "a.isxc.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "19310",
+      "remarks_base64": "Ng=="
+    },
+    {
+      "enable": true,
+      "password": "isx.yt-30877439",
+      "method": "aes-256-cfb",
+      "remarks": "7",
+      "server": "c.isxb.top",
+      "kcptun": {
+        "nocomp": false,
+        "crypt": "aes",
+        "datashard": 10,
+        "mtu": 1350,
+        "mode": "fast",
+        "arguments": "",
+        "key": "it's a secrect",
+        "parityshard": 3
+      },
+      "enabled_kcptun": false,
+      "server_port": "19959",
+      "remarks_base64": "Nw=="
+    }
   ],
   "proxyPort": 0,
   "randomAlgorithm": 0,

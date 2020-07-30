@@ -81,6 +81,15 @@ def url_open(url, data=None):
 
 # 以上内容, 参考文章 https://coderschool.cn/2498.html
 
+#协议参数、混淆参数、备注及Group对应的参数值
+# Param_base64 = obfsparam=obfsparam_base64&protoparam=protoparam_base64&remarks=remarks_base64&group=group_base64
+
+#密码/?参数
+# SSRPWDbase64 = password_base64/?Param_base64
+
+#最终链接
+# SSRbase64 = ssr://ip:port:SSRprotocol:method:SSRobfs:SSRPWDbase64
+
 # 配合 https://github.com/yangfeicheung/Shadowsocks-X 使用
 
 class Shadow:
